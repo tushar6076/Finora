@@ -1,0 +1,48 @@
+<AboutDialogContent>:
+    orientation: "vertical"
+    adaptive_height: True
+    padding: dp(8), dp(8), dp(8), dp(16)
+    spacing: dp(12)
+
+    FitImage:
+        source: "app/assets/icons/finora.png"
+        size_hint: None, None
+        size: dp(80), dp(80)
+        radius: [dp(12), ]
+        pos_hint: {"center_x": .5}
+
+    MDLabel:
+        text: "Finora v2.3.1"
+        halign: "center"
+        font_style: "Title"
+        role: "large"
+        adaptive_height: True
+        bold: True
+
+    MDLabel:
+        text: "Personal Finance Manager"
+        halign: "center"
+        font_style: "Title"
+        role: "small"
+        theme_text_color: "Secondary"
+        adaptive_height: True
+
+    MDDivider:
+        padding: dp(10), 0, dp(10), 0
+
+    MDLabel:
+        text: "Finora is an open-source, offline-first financial tool designed to keep your data 100% private. No cloud, no tracking—just pure utility."
+        halign: "center"
+        font_style: "Body"
+        role: "medium"
+        theme_text_color: "Secondary"
+        adaptive_height: True
+
+    MDLabel:
+        text: "Crafted by HackSmiths"
+        halign: "center"
+        font_style: "Label"
+        role: "large"
+        theme_text_color: "Custom"
+        text_color: app.theme_cls.primaryColor
+        adaptive_height: True

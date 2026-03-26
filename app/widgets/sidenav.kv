@@ -1,0 +1,180 @@
+# 1. Define the custom class at the top for reusability
+<DrawerSectionLabel@MDBoxLayout>:
+    adaptive_height: True
+    padding: dp(16), dp(16), 0, dp(4)
+    text: ""
+    
+    MDNavigationDrawerLabel:
+        text: root.text
+        padding: 0, 0, 0, 0
+        theme_text_color: "Secondary"
+        font_style: "Label"
+        role: "medium"
+
+<Navigation_Drawer@MDBoxLayout>:
+    on_kv_post: app.drawer_instance = self
+    orientation: "vertical"
+    MDNavigationDrawerMenu:
+        id: drawer_menu
+        bar_width: 0
+        do_scroll_x: False
+        spacing: "4dp"
+        MDBoxLayout:
+            orientation: "vertical"
+            adaptive_height: True
+            padding: ["16dp", "24dp", "16dp", "16dp"]
+            spacing: "4dp"
+            
+            MDLabel:
+                text: "Finora"
+                font_style: "Display"
+                role: "small"
+                theme_text_color: "Custom"
+                text_color: "#4F46E5" 
+                bold: True
+                adaptive_height: True
+
+            MDLabel:
+                text: "Personal Finance Manager"
+                font_style: "Label"
+                role: "medium"
+                theme_text_color: "Secondary"
+                adaptive_height: True
+
+        MDNavigationDrawerDivider:
+            padding: 0, dp(12), 0, dp(12)
+
+        MDNavigationDrawerItem:
+            id: nav_all
+            is_syncing: False
+            on_release: 
+                if not self.is_syncing: app.root.ids.screen_manager.current = "home"
+                if not self.is_syncing: app.root.ids.screen_manager.get_screen('home').load_entries("All")
+                if not self.is_syncing: app.root.ids.screen_manager.get_screen('home').update_ui_state(state="normal")
+                app.root.ids.nav_drawer.set_state("close")
+            MDNavigationDrawerItemLeadingIcon:
+                icon: "home-outline"
+            MDNavigationDrawerItemText:
+                text: "All Entries"
+            PillBadge:
+                id: badge_all
+                text: "0"
+                on_parent: self.set_colors("#64748B")
+
+        MDNavigationDrawerItem:
+            on_release: 
+                app.last_screen = app.root.ids.screen_manager.current
+                app.root.ids.screen_manager.current = "add_entry"
+                app.root.ids.nav_drawer.set_state("close")
+            MDNavigationDrawerItemLeadingIcon:
+                icon: "pencil-outline"
+            MDNavigationDrawerItemText:
+                text: "Add Entry"
+            PillBadge:
+                text: "new"
+                on_parent: self.set_colors("#6366F1")
+
+        MDNavigationDrawerDivider:
+
+        DrawerSectionLabel:
+            text: "Filters"
+
+        MDNavigationDrawerItem:
+            id: nav_credit
+            is_syncing: False
+            on_release: 
+                if not self.is_syncing: app.root.ids.screen_manager.current = "home"
+                if not self.is_syncing: app.root.ids.screen_manager.get_screen('home').load_entries("Credit")
+                app.root.ids.nav_drawer.set_state("close")
+            MDNavigationDrawerItemLeadingIcon:
+                icon: "arrow-up-bold-outline"
+            MDNavigationDrawerItemText:
+                text: "Credit Entries"
+            PillBadge:
+                id: badge_credit
+                text: "0"
+                on_parent: self.set_colors("#22C55E", "#000000")
+
+        MDNavigationDrawerItem:
+            id: nav_debit
+            is_syncing: False
+            on_release: 
+                if not self.is_syncing: app.root.ids.screen_manager.current = "home"
+                if not self.is_syncing: app.root.ids.screen_manager.get_screen('home').load_entries("Debit")
+                app.root.ids.nav_drawer.set_state("close")
+            MDNavigationDrawerItemLeadingIcon:
+                icon: "arrow-down-bold-outline"
+            MDNavigationDrawerItemText:
+                text: "Debit Entries"
+            PillBadge:
+                id: badge_debit
+                text: "0"
+                on_parent: self.set_colors("#F59E0B", "#000000")
+
+        MDNavigationDrawerItem:
+            id: nav_receipt
+            is_syncing: False
+            on_release: 
+                if not self.is_syncing: app.root.ids.screen_manager.current = "home"
+                if not self.is_syncing: app.root.ids.screen_manager.get_screen('home').load_entries("Receipt")
+                app.root.ids.nav_drawer.set_state("close")
+            MDNavigationDrawerItemLeadingIcon:
+                icon: "text-box-outline"
+            MDNavigationDrawerItemText:
+                text: "Receipts"
+            PillBadge:
+                id: badge_receipt
+                text: "0"
+                on_parent: self.set_colors("#06B6D4", "#000000")
+
+        MDNavigationDrawerDivider:
+
+        DrawerSectionLabel:
+            text: "Data Management"
+
+        MDNavigationDrawerItem:
+            on_release: 
+                app.download_full_report()
+                app.root.ids.nav_drawer.set_state("close")
+                app.sync_ui_nav(app.root.ids.screen_manager.current)
+            MDNavigationDrawerItemLeadingIcon:
+                icon: "download-outline"
+            MDNavigationDrawerItemText:
+                text: "Download Record"
+
+        MDNavigationDrawerItem:
+            on_release: 
+                app.share_full_report()
+                app.root.ids.nav_drawer.set_state("close")
+                app.sync_ui_nav(app.root.ids.screen_manager.current)
+            MDNavigationDrawerItemLeadingIcon:
+                icon: "share-variant-outline"
+            MDNavigationDrawerItemText:
+                text: "Export & Share"
+
+        MDNavigationDrawerDivider:
+
+        MDNavigationDrawerItem:
+            on_release: 
+                app.last_screen = app.root.ids.screen_manager.current
+                app.root.ids.screen_manager.current = "settings"
+                app.root.ids.nav_drawer.set_state("close")
+            MDNavigationDrawerItemLeadingIcon:
+                icon: "cog-outline"
+            MDNavigationDrawerItemText:
+                text: "Settings"
+
+        MDNavigationDrawerItem:
+            id: nav_bin
+            is_syncing: False
+            on_release: 
+                if not self.is_syncing: app.root.ids.screen_manager.current = "bin"
+                app.root.ids.nav_drawer.set_state("close")
+            MDNavigationDrawerItemLeadingIcon:
+                icon: "trash-can-outline"
+            MDNavigationDrawerItemText:
+                text: "Bin"
+            PillBadge:
+                id: badge_bin
+                text: "0"
+                on_parent: self.set_colors("#EF4444", "#000000")

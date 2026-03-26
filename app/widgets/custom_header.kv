@@ -1,0 +1,118 @@
+# --- 1. REUSABLE SEARCH HEADER ---
+<SearchHeader@MDBoxLayout>:
+    orientation: "vertical"
+    adaptive_height: True
+    spacing: dp(4)
+    md_bg_color: app.theme_cls.backgroundColor
+    
+    # Custom attributes for dynamic behavior
+    icon: "menu"
+    hint_text: "Search..."
+    icon_action: None
+    text_action: None
+    focus_action: None
+
+    MDCard:
+        id: search_card
+        size_hint: 0.95, None
+        height: dp(52)
+        pos_hint: {"center_x": .5}
+        radius: dp(26)
+        elevation: 1
+        style: "filled"
+        md_bg_color: app.theme_cls.surfaceContainerColor
+        
+        MDBoxLayout:
+            padding: [dp(4), 0, dp(16), 0]
+            spacing: dp(8)
+            
+            MDIconButton:
+                id: header_icon_btn
+                icon: root.icon
+                pos_hint: {"center_y": .5}
+                on_release: if root.icon_action: root.icon_action()
+
+            TextInput:
+                id: search_field
+                hint_text: root.hint_text
+                multiline: False
+                background_color: 0, 0, 0, 0
+                foreground_color: app.theme_cls.onSurfaceColor
+                hint_text_color: app.theme_cls.onSurfaceVariantColor
+                cursor_color: app.theme_cls.primaryColor
+                font_size: "16sp"
+                padding: [0, dp(16), 0, 0]
+                on_focus: if not self.text and root.focus_action: root.focus_action(self, self.focus)
+                on_text: if root.text_action: root.text_action(self.text)
+
+    MDScrollView:
+        id: filter_scroll
+        size_hint_y: None
+        height: 0       
+        opacity: 0  
+        bar_width: 0  
+        do_scroll_x: True
+        do_scroll_y: False
+        MDBoxLayout:
+            id: filter_container
+            adaptive_width: True
+            padding: [dp(16), dp(8), dp(16), dp(8)]
+            spacing: dp(8)
+            
+            FilterChip:
+                filter_key: "Method"
+                text: "Method"
+            FilterChip:
+                filter_key: "Type"
+                text: "Type"
+            FilterChip:
+                filter_key: "Date"
+                text: "Date"
+
+# --- 2. NORMAL SUB-HEADER ---
+<NormalSubHeader@MDBoxLayout>:
+    orientation: "horizontal"
+    adaptive_height: True
+    # Properties for dynamic text
+    label_text: "ALL TRANSACTIONS"
+    amount_text: ""
+
+    MDLabel:
+        id: category_type
+        text: root.label_text
+        font_style: "Label"
+        role: "small"
+        theme_text_color: "Secondary"
+        pos_hint: {"center_y": .5}
+        padding: [dp(8), 0]
+    MDLabel:
+        id: total_amount
+        text: root.amount_text
+        halign: "right"
+        font_style: "Label"
+        role: "small"
+        theme_text_color: "Secondary"
+        pos_hint: {"center_y": .5}
+        opacity: 1 if self.text else 0
+
+# --- 3. SELECTION SUB-HEADER ---
+<SelectionSubHeader@MDBoxLayout>:
+    orientation: "horizontal"
+    adaptive_height: True
+    padding: [dp(8), 0, dp(16), 0]
+    
+    select_all_action: None
+    check_icon: "checkbox-blank-outline"
+
+    MDIconButton:
+        id: select_all_btn
+        icon: root.check_icon
+        pos_hint: {"center_y": .5}
+        on_release: if root.select_all_action: root.select_all_action(self)
+
+    MDLabel:
+        text: "Select All"
+        font_style: "Label"
+        role: "medium"
+        theme_text_color: "Secondary"
+        pos_hint: {"center_y": .5}

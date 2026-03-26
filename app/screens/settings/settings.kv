@@ -1,0 +1,167 @@
+<SettingsLabel@MDLabel>:
+    theme_text_color: "Custom"
+    text_color: app.theme_cls.primaryColor
+    font_style: "Title"
+    role: "small"
+    adaptive_height: True
+    padding: [dp(16), dp(24), 0, dp(8)]
+
+<SettingsItem@MDCard>:
+    icon: ""
+    text: ""
+    secondary_text: ""
+    style: "filled"
+    adaptive_height: True
+    padding: [dp(16), dp(8), dp(16), dp(8)]
+    spacing: dp(16)
+    radius: dp(12)
+
+    theme_bg_color: "Custom"
+    md_bg_color: 0, 0, 0, 0 
+
+    theme_shadow_color: "Custom"
+    shadow_color: 0, 0, 0, 0
+
+    md_bg_color_disabled: 0, 0, 0, 0
+    opacity: 1 if not self.disabled else 0.5
+
+    MDIcon:
+        icon: root.icon
+        pos_hint: {"center_y": .5}
+        theme_icon_color: "Custom"
+        icon_color: app.theme_cls.onSurfaceVariantColor
+
+    MDBoxLayout:
+        orientation: "vertical"
+        adaptive_height: True
+        pos_hint: {"center_y": .5}
+        
+        MDLabel:
+            text: root.text
+            font_style: "Body"
+            role: "large"
+            adaptive_height: True
+            theme_text_color: "Primary"
+        
+        MDLabel:
+            text: root.secondary_text
+            font_style: "Label"
+            role: "medium"
+            theme_text_color: "Secondary"
+            adaptive_height: True
+
+<SettingsScreen>:
+    name: "settings"
+    md_bg_color: self.theme_cls.backgroundColor
+
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: dp(2)
+
+        MDTopAppBar:
+            type: "small"
+            padding: dp(8)
+
+            MDTopAppBarLeadingButtonContainer:
+                MDActionTopAppBarButton:
+                    icon: "arrow-left"
+                    on_release: app.root.ids.screen_manager.current = app.last_screen
+
+            MDTopAppBarTitle:
+                text: "Settings"
+                theme_text_color: "Primary"
+
+        MDScrollView:
+            bar_width: 0
+            do_scroll_x: False
+            padding: dp(8)
+            MDBoxLayout:
+                orientation: "vertical"
+                adaptive_height: True
+                padding: [0, 0, 0, dp(20)]
+
+                SettingsLabel:
+                    text: "Appearance"
+
+                SettingsItem:
+                    icon: "theme-light-dark"
+                    text: "Dark Mode"
+                    secondary_text: "Switch between light and dark themes"
+                    on_release: theme_switch.active = not theme_switch.active
+                    NoRippleSwitch:
+                        id: theme_switch
+                        pos_hint: {"center_y": .5}
+                        active: app.theme_cls.theme_style == "Dark"
+                        on_active: root.toggle_theme(self.active)
+
+                MDDivider:
+                    padding: [dp(16), 0, dp(16), 0]
+
+                SettingsLabel:
+                    text: "Data & Automation"
+
+                SettingsItem:
+                    id: export_path_item
+                    icon: "folder-open-outline"
+                    text: "Download Directory"
+                    secondary_text: "Not set (Will ask on first export)"
+                    on_release: root.pick_export_folder()
+
+                SettingsItem:
+                    icon: "autorenew"
+                    text: "Enable Auto-Export"
+                    secondary_text: "Automatically generate reports on startup"
+                    on_release: auto_export_switch.active = not auto_export_switch.active
+                    NoRippleSwitch:
+                        id: auto_export_switch
+                        pos_hint: {"center_y": .5}
+                        on_active: root.toggle_auto_export(self.active)    
+
+                SettingsItem:
+                    id: export_freq_item
+                    icon: "history"
+                    text: "Auto-Export Frequency"
+                    secondary_text: "Currently: Weekly"
+                    disabled: not auto_export_switch.active
+                    on_release: if auto_export_switch.active: root.show_frequency_menu()
+
+                SettingsItem:
+                    id: export_range_item
+                    icon: "calendar-range-outline"
+                    text: "Export Data Range"
+                    secondary_text: "Currently: Full History"
+                    on_release: root.show_range_menu()
+
+                SettingsItem:
+                    icon: "share-variant-outline"
+                    text: "Quick Share"
+                    secondary_text: "Always open share sheet after export"
+                    on_release: quick_share_switch.active = not quick_share_switch.active
+                    NoRippleSwitch:
+                        id: quick_share_switch
+                        pos_hint: {"center_y": .5}
+                        on_active: root.toggle_quick_share(self.active)
+
+                MDDivider:
+                    padding: [dp(16), 0, dp(16), 0]
+
+                SettingsLabel:
+                    text: "Support & Feedback"
+
+                SettingsItem:
+                    icon: "help-circle-outline"
+                    text: "Help Center"
+                    secondary_text: "Guides, FAQs, and troubleshooting"
+                    on_release: root.show_help_dialog()
+
+                SettingsItem:
+                    icon: "information-outline"
+                    text: "About Finora"
+                    secondary_text: "Version 2.0.0 | Developed by HackSmiths"
+                    on_release: root.show_info()
+
+                SettingsItem:
+                    icon: "shield-check-outline"
+                    text: "Permissions"
+                    secondary_text: "Manage storage and notification access"
+                    on_release: root.load_permission()
