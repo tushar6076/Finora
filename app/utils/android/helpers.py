@@ -7,6 +7,7 @@ from . import (
     PythonActivity, Intent, Uri, View, String, File, FileProvider,
     Color, WindowManager, DocumentsContract, ContentResolver
 )
+from .notification import android_notify
 from android.runnable import run_on_ui_thread
 
 def set_android_status_bar(app_instance):
@@ -76,7 +77,7 @@ def handle_saf_result(app, request_code, result_code, intent):
                 filename = getattr(app, 'current_filename', "")
 
                 if temp_path and filename:
-                    save_to_authorized_uri(temp_path, uri_string, filename)
+                    save_to_authorized_uri(settings, temp_path, uri_string, filename)
                     app.current_temp_file = ""
                     app.current_filename = ""
                 
@@ -96,7 +97,7 @@ def open_file_chooser():
         print(f"Android SAF Picker Failed: {e}")
         return False
 
-def save_to_authorized_uri(temp_file_path, tree_uri_string, filename):
+def save_to_authorized_uri(settings, temp_file_path, tree_uri_string, filename):
     try:
         tree_uri = Uri.parse(tree_uri_string)
         doc_id = DocumentsContract.getTreeDocumentId(tree_uri)
@@ -120,6 +121,13 @@ def save_to_authorized_uri(temp_file_path, tree_uri_string, filename):
 
         if os.path.exists(temp_file_path):
             os.remove(temp_file_path)
+        
+        if settings.notifications_enabled:
+            android_notify(
+                title="Finora: Report Saved",
+                message=f"Check your {os.path.basename(settings.export_path or 'storage')}"
+            )
+
         return True
     except Exception as e:
         print(f"SAF Write Error: {e}")

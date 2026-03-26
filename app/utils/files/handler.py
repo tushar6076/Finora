@@ -10,7 +10,6 @@ from app.utils.ui import show_msg
 from plyer import notification
 
 if platform == 'android':
-    from app.utils.android.notification import android_notify
     from app.utils.android.helpers import save_to_authorized_uri, open_file_chooser
     from app.utils.android import share_file_android
 
@@ -40,7 +39,7 @@ def download_report(app, records, is_auto=False):
         if platform == 'android':
             if settings.export_path:
                 # Save silently to the authorized URI
-                save_to_authorized_uri(temp_path, settings.export_path, filename)
+                save_to_authorized_uri(settings, temp_path, settings.export_path, filename)
             else:
                 # Trigger SAF Picker and save path for next time
                 app.current_temp_file = temp_path
@@ -50,6 +49,12 @@ def download_report(app, records, is_auto=False):
             if settings.export_path:
                 shutil.copy(temp_path, settings.export_path)
                 os.remove(temp_path)
+                if settings.notifications_enabled:
+                    notification.notify(
+                        title="Finora: Report Saved",
+                        message=f"Check your {os.path.basename(settings.export_path or 'storage')}",
+                        app_name="Finora"
+                    )
             else:
                 app.current_temp_file = temp_path
                 app.current_filename = filename
@@ -62,19 +67,6 @@ def download_report(app, records, is_auto=False):
         if not is_auto:
             # Using your hex code for success (light green)
             show_msg(text=f"Exported: {filename}", status='success')
-
-        if settings.notifications_enabled:
-            if platform == 'android':
-                android_notify(
-                    title="Finora: Report Saved",
-                    message=f"Check your {os.path.basename(settings.export_path or 'storage')}"
-                )
-            else:
-                notification.notify(
-                    title="Finora: Report Saved",
-                    message=f"Check your {os.path.basename(settings.export_path or 'storage')}",
-                    app_name="Finora"
-                )
 
     except Exception as e:
         print(f"Unified Export Error: {e}")

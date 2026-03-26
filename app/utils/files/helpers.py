@@ -2,7 +2,7 @@ import os
 import shutil
 from kivymd.app import MDApp
 from app.models import UserSetting
-from plyer import filechooser
+from plyer import filechooser, notification
 
 def win_file_chooser():
     def callback(selection):
@@ -27,6 +27,13 @@ def win_file_chooser():
                 dest_path = os.path.join(folder_path, filename)
                 shutil.copy(temp_path, dest_path)
                 os.remove(temp_path)
-                return True
+                if settings.notifications_enabled:
+                    notification.notify(
+                        title="Finora: Report Saved",
+                        message=f"Check your {os.path.basename(settings.export_path or 'storage')}",
+                        app_name="Finora"
+                    )
+                    return True
+        return False
     
     filechooser.choose_dir(title="Select Export Folder", on_selection=callback)
