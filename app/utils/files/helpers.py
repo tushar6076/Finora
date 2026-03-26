@@ -4,6 +4,8 @@ from kivymd.app import MDApp
 from app.models import UserSetting
 from plyer import filechooser, notification
 
+from app.utils.ui import show_msg
+
 def win_file_chooser():
     def callback(selection):
         if not selection: 
@@ -27,6 +29,7 @@ def win_file_chooser():
                 dest_path = os.path.join(folder_path, filename)
                 shutil.copy(temp_path, dest_path)
                 os.remove(temp_path)
+                show_msg(text=f"Exported: {filename}", status='success')
                 if settings.notifications_enabled:
                     notification.notify(
                         title="Finora: Report Saved",

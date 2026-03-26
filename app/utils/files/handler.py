@@ -4,7 +4,7 @@ import datetime
 from kivy.utils import platform
 from app.models import UserSetting
 
-from app.utils.files.helpers import win_file_chooser
+from .helpers import win_file_chooser
 from app.utils.ui import show_msg
 
 from plyer import notification
@@ -39,7 +39,7 @@ def download_report(app, records, is_auto=False):
         if platform == 'android':
             if settings.export_path:
                 # Save silently to the authorized URI
-                save_to_authorized_uri(settings, temp_path, settings.export_path, filename)
+                save_to_authorized_uri(settings, temp_path, settings.export_path, filename, is_auto)
             else:
                 # Trigger SAF Picker and save path for next time
                 app.current_temp_file = temp_path
@@ -49,6 +49,9 @@ def download_report(app, records, is_auto=False):
             if settings.export_path:
                 shutil.copy(temp_path, settings.export_path)
                 os.remove(temp_path)
+                if not is_auto:
+                    # Using your hex code for success (light green)
+                    show_msg(text=f"Exported: {filename}", status='success')
                 if settings.notifications_enabled:
                     notification.notify(
                         title="Finora: Report Saved",
@@ -63,10 +66,6 @@ def download_report(app, records, is_auto=False):
         # 3. Metadata & Feedback
         settings.last_export_date = datetime.datetime.now()
         app.db.commit()
-
-        if not is_auto:
-            # Using your hex code for success (light green)
-            show_msg(text=f"Exported: {filename}", status='success')
 
     except Exception as e:
         print(f"Unified Export Error: {e}")

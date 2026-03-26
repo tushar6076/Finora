@@ -2,6 +2,8 @@ import os
 from kivy.utils import platform
 from app.models import UserSetting
 
+from app.utils.ui import show_msg
+
 # Import the pre-initialized JNI classes from the parent __init__
 from . import (
     PythonActivity, Intent, Uri, View, String, File, FileProvider,
@@ -97,7 +99,7 @@ def open_file_chooser():
         print(f"Android SAF Picker Failed: {e}")
         return False
 
-def save_to_authorized_uri(settings, temp_file_path, tree_uri_string, filename):
+def save_to_authorized_uri(settings, temp_file_path, tree_uri_string, filename, is_auto=False):
     try:
         tree_uri = Uri.parse(tree_uri_string)
         doc_id = DocumentsContract.getTreeDocumentId(tree_uri)
@@ -121,6 +123,10 @@ def save_to_authorized_uri(settings, temp_file_path, tree_uri_string, filename):
 
         if os.path.exists(temp_file_path):
             os.remove(temp_file_path)
+    
+        if not is_auto:
+            # Using your hex code for success (light green)
+            show_msg(text=f"Exported: {filename}", status='success')
         
         if settings.notifications_enabled:
             android_notify(
