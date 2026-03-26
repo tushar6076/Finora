@@ -23,3 +23,6 @@ bin/
 # Finora specific cache
 app/cache/
 *.log
+
+# Ignore compiled APKs in the project root
+*.apk
