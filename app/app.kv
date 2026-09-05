@@ -1,0 +1,35 @@
+#:import FadeTransition kivy.uix.screenmanager.FadeTransition
+# Importing all your screen classes
+#:import HomeScreen app.screens.home.home.HomeScreen
+#:import AddEntryScreen app.screens.registration.add_entry.AddEntryScreen
+#:import ViewEntryScreen app.screens.views.view_entry.ViewEntryScreen
+#:import SettingsScreen app.screens.settings.settings.SettingsScreen
+#:import BinScreen app.screens.bin.bin.BinScreen
+
+MDNavigationLayout:
+    MDScreenManager:
+        id: screen_manager
+        transition: FadeTransition()
+        on_current: app.sync_ui_nav(self.current)
+        
+        HomeScreen:
+            name: "home"
+            
+        AddEntryScreen:
+            name: "add_entry"
+            
+        ViewEntryScreen:
+            name: "view_entry"
+            
+        SettingsScreen:
+            name: "settings"
+            
+        BinScreen:
+            name: "bin"
+
+    MDNavigationDrawer:
+        id: nav_drawer
+        radius: (0, dp(16), dp(16), 0)
+        
+        Navigation_Drawer:
+            id: content_drawer

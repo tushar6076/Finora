@@ -1,0 +1,149 @@
+<ViewEntryScreen>:
+    name: "view_entry"
+    md_bg_color: app.theme_cls.backgroundColor
+
+    MDBoxLayout:
+        orientation: "vertical"
+
+        # KivyMD 2.0 Top Bar Structure
+        MDTopAppBar:
+            type: "small"
+            md_bg_color: app.theme_cls.backgroundColor
+            
+            MDTopAppBarLeadingButtonContainer:
+                MDActionTopAppBarButton:
+                    icon: "arrow-left"
+                    theme_icon_color: "Custom"
+                    icon_color: app.theme_cls.onSurfaceVariantColor
+                    on_release: app.root.ids.screen_manager.current = app.last_screen
+
+
+            MDTopAppBarTrailingButtonContainer:
+                id: trailing_container
+                MDActionTopAppBarButton:
+                    icon: "share-variant-outline"
+                    theme_icon_color: "Custom"
+                    icon_color: app.theme_cls.onSurfaceVariantColor
+                    on_release: root.share_entry()
+                MDActionTopAppBarButton:
+                    icon: "download-outline"
+                    theme_icon_color: "Custom"
+                    icon_color: app.theme_cls.onSurfaceVariantColor
+                    on_release: root.download_entry()
+                MDActionTopAppBarButton:
+                    icon: "pencil-outline"
+                    theme_icon_color: "Custom"
+                    icon_color: app.theme_cls.onSurfaceVariantColor
+                    on_release: root.edit_entry()
+                MDActionTopAppBarButton:
+                    icon: "trash-can-outline"
+                    theme_icon_color: "Custom"
+                    # Error color for the delete button is standard
+                    icon_color: app.theme_cls.errorColor
+                    on_release: root.delete_entry()
+
+        MDScrollView:
+            bar_width: 0
+            do_scroll_x: False
+            MDBoxLayout:
+                orientation: "vertical"
+                adaptive_height: True
+                padding: dp(20)
+                spacing: dp(24)
+
+                # --- Hero Card ---
+                MDCard:
+                    style: "filled"
+                    size_hint_y: None
+                    height: dp(120)
+                    radius: dp(24)
+                    theme_bg_color: "Custom"
+                    # M3 Surface mapping for a subtle 'lifted' look
+                    md_bg_color: app.theme_cls.surfaceContainerLowColor
+                    padding: dp(16)
+                    
+                    MDBoxLayout:
+                        orientation: "vertical"
+                        pos_hint: {"center_y": .5}
+                        
+                        MDLabel:
+                            id: amount
+                            text: "₹ 0.00"
+                            font_style: "Headline"
+                            role: "medium"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: app.theme_cls.primaryColor
+                        
+                        MDLabel:
+                            id: transaction_type
+                            text: "CREDIT"
+                            font_style: "Label"
+                            role: "medium"
+                            halign: "center"
+                            theme_text_color: "Custom"
+                            text_color: app.theme_cls.onSurfaceVariantColor
+
+                # --- Details List ---
+                MDBoxLayout:
+                    orientation: "vertical"
+                    adaptive_height: True
+                    spacing: dp(16)
+
+                    DetailItem:
+                        icon: "account-outline"
+                        label: "Person Name"
+                        id: person_name
+
+                    DetailItem:
+                        icon: "office-building-marker-outline"
+                        label: "Branch / Purpose"
+                        id: branch_name
+
+                    DetailItem:
+                        icon: "calendar-month-outline"
+                        label: "Date"
+                        id: transaction_date
+
+                    DetailItem:
+                        icon: "wallet-outline"
+                        label: "Payment Method"
+                        id: transaction_method
+
+                    DetailItem:
+                        icon: "account-check-outline"
+                        label: "Handled By"
+                        id: received_by
+
+# --- Custom Reusable Detail Widget ---
+<DetailItem>:
+    adaptive_height: True
+    spacing: dp(16)
+    padding: [0, dp(8), 0, dp(8)]
+
+    MDIcon:
+        icon: root.icon
+        theme_icon_color: "Custom"
+        icon_color: app.theme_cls.onSurfaceVariantColor
+        pos_hint: {"center_y": .5}
+
+    MDBoxLayout:
+        orientation: "vertical"
+        adaptive_height: True
+        
+        MDLabel:
+            text: root.label
+            font_style: "Label"
+            role: "small"
+            theme_text_color: "Custom"
+            text_color: app.theme_cls.onSurfaceVariantColor
+            adaptive_height: True
+        
+        MDLabel:
+            id: value_label
+            text: root.text
+            font_style: "Body"
+            role: "large"
+            theme_text_color: "Custom"
+            text_color: app.theme_cls.onSurfaceColor
+            adaptive_height: True

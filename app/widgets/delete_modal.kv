@@ -1,0 +1,38 @@
+<DeleteContent>:
+    orientation: "vertical"
+    spacing: dp(20)
+    padding: dp(10)
+    adaptive_height: True
+
+    MDLabel:
+        text: "This action cannot be undone. Are you sure you want to delete this entry?"
+        halign: "center"
+        font_style: "Body"
+        role: "medium"
+        theme_text_color: "Secondary"
+        adaptive_height: True
+
+    MDBoxLayout:
+        adaptive_height: True
+        spacing: dp(12)
+        pos_hint: {"right": 1} 
+
+        MDButton:
+            style: "text"
+            # Dynamically dismisses the dialog regardless of which screen opened it
+            on_release: root.parent.parent.parent.dismiss()
+            MDButtonText:
+                text: "CANCEL"
+                theme_text_color: "Custom"
+                text_color: "#64748B"
+
+        MDButton:
+            style: "filled"
+            theme_bg_color: "Custom"
+            md_bg_color: "#EF4444"
+            # Dynamically calls perform_delete on the active screen
+            on_release: app.root.ids.screen_manager.get_screen('bin').perform_delete()
+            MDButtonText:
+                text: "DELETE"
+                theme_text_color: "Custom"
+                text_color: "#FFFFFF"

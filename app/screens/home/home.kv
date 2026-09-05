@@ -1,0 +1,103 @@
+# --- HELPER COMPONENTS ---
+<FilterChip@MDButton>:
+    filter_key: ""  
+    text: ""        
+    style: "outlined"
+    size_hint_y: None
+    height: dp(32)
+    radius: dp(8)
+    on_release: app.root.ids.screen_manager.get_screen('home').open_filter_menu(self, self.filter_key)
+    
+    MDButtonText:
+        text: root.text
+        text_color: app.theme_cls.secondaryColor
+        font_style: "Label"
+        role: "medium"
+    MDButtonIcon:
+        icon: "menu-down"
+        icon_color: app.theme_cls.secondaryColor
+        size_hint: None, None
+        size: dp(18), dp(18)
+
+# --- HOME SCREEN MAIN LAYOUT ---
+<HomeScreen>:
+    name: "home"
+    md_bg_color: self.theme_cls.backgroundColor
+
+    MDBoxLayout:
+        orientation: "vertical"
+        
+        # 1. FIXED HEADER CONTAINER
+        MDBoxLayout:
+            id: header_container
+            orientation: "vertical"
+            adaptive_height: True
+            padding: [0, dp(8), 0, 0]
+            md_bg_color: self.theme_cls.backgroundColor
+            
+            SearchHeader:
+                id: search_ui
+                hint_text: "Search in transactions"
+                icon_action: root.on_header_button_release
+                text_action: root.search
+                focus_action: root.on_search_focus
+        
+        # 2. DUAL-STATE SUB-HEADER CONTAINER
+        MDBoxLayout:
+            id: sub_heading_container
+            orientation: "vertical"
+            adaptive_height: True
+            spacing: 0
+            padding: [dp(16), dp(8), dp(24), dp(8)]
+            # Background inherited
+            
+            NormalSubHeader:
+                id: sub_ui
+                opacity: 1
+                disabled: False
+                size_hint_y: None
+                height: dp(40)
+
+            SelectionSubHeader:
+                id: sub_ui_selection
+                opacity: 0
+                disabled: True
+                size_hint_y: None
+                height: 0
+
+        # 3. Main Content Area
+        MDRelativeLayout:
+            # Background inherited
+        
+            # 1. EMPTY STATE
+            EmptyState:
+                id: empty_search_box
+                opacity: 0
+                disabled: True
+                title: "No transactions"
+                description: "Try adjusting your filters or search term."
+                button_text: "Clear Filters"
+                callback: root.reset_filter_chips
+
+            # 2. SCROLL VIEW
+            MDScrollView:
+                id: main_scroll
+                bar_width: 0
+                do_scroll_x: False
+                MDList:
+                    id: entry_list
+                    adaptive_height: True
+                    padding: [dp(16), 0, dp(16), dp(16)]
+                    spacing: dp(4)
+                    # No background needed; the HomeScreen background shows through
+
+    # FAB: Dynamically colored based on theme roles
+    MDFabButton:
+        id: fab
+        icon: "plus"
+        style: "standard"
+        theme_bg_color: "Custom"
+        md_bg_color: app.theme_cls.primaryContainerColor
+        icon_color: app.theme_cls.onPrimaryContainerColor
+        pos_hint: {"center_x": 0.85, "center_y": 0.1}
+        on_release: root.go_to_add_entry()

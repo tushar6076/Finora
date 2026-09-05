@@ -1,0 +1,161 @@
+<AddEntryScreen>:
+    name: "add_entry"
+    md_bg_color: app.theme_cls.backgroundColor
+
+    MDBoxLayout:
+        orientation: "vertical"
+        
+        MDTopAppBar:
+            type: "small"
+            md_bg_color: app.theme_cls.backgroundColor
+            padding: [dp(12), dp(8), dp(16), dp(8)]
+            
+            MDTopAppBarLeadingButtonContainer:
+                MDActionTopAppBarButton:
+                    icon: "close"
+                    theme_icon_color: "Custom"
+                    icon_color: app.theme_cls.onSurfaceVariantColor 
+                    on_release: 
+                        root.clear_fields()
+                        app.root.ids.screen_manager.current = app.last_screen
+                        app.last_screen = 'home' if app.last_screen == 'view_entry' else app.last_screen
+
+            MDTopAppBarTitle:
+                id: app_bar_title
+                text: "New Transaction"
+                theme_text_color: "Custom"
+                text_color: app.theme_cls.onSurfaceColor
+
+            MDTopAppBarTrailingButtonContainer:
+                MDActionTopAppBarButton:
+                    id: submit_btn
+                    icon: "check"
+                    theme_icon_color: "Custom"
+                    icon_color: app.theme_cls.primaryColor 
+                    disabled: True
+                    on_release: root.submit_entry()
+                    
+                    canvas.before:
+                        Color:
+                            rgba: list(app.theme_cls.primaryColor)[:3] + [0.12]
+                        SmoothEllipse:
+                            pos: self.pos
+                            size: self.size
+
+        MDScrollView:
+            bar_width: 0
+            do_scroll_x: False
+            MDBoxLayout:
+                id: container
+                orientation: "vertical"
+                adaptive_height: True
+                padding: dp(16)
+                spacing: dp(28)
+
+                MDTextField:
+                    id: person_name
+                    mode: "outlined"
+                    on_focus: root.check_empty_on_leave(self, self.focus)
+                    on_text: root.toggle_submit()
+                    MDTextFieldHintText:
+                        text: "Person Name"
+                    MDTextFieldLeadingIcon:
+                        icon: "account-outline"
+                    MDTextFieldHelperText:
+                        text: "This field is required"
+                        mode: "on_error"
+
+                MDTextField:
+                    id: branch_name
+                    mode: "outlined"
+                    on_focus: root.check_empty_on_leave(self, self.focus)
+                    on_text: root.toggle_submit()
+                    MDTextFieldHintText:
+                        text: "Branch Name"
+                    MDTextFieldLeadingIcon:
+                        icon: "office-building-marker-outline"
+                    MDTextFieldHelperText:
+                        text: "This field is required"
+                        mode: "on_error"
+
+                MDTextField:
+                    id: transaction_date
+                    mode: "outlined"
+                    readonly: True
+                    on_touch_down:
+                        if self.collide_point(*args[1].pos): \
+                        root.show_date_picker(); \
+                        root.check_empty_on_leave(self, False)
+                    on_text: root.toggle_submit()
+                    MDTextFieldHintText:
+                        text: "Transaction Date"
+                    MDTextFieldLeadingIcon:
+                        icon: "calendar-range"
+                    MDTextFieldHelperText:
+                        text: "This field is required"
+                        mode: "on_error"
+
+                MDTextField:
+                    id: amount
+                    mode: "outlined"
+                    input_filter: "float"
+                    on_focus: root.check_empty_on_leave(self, self.focus)
+                    on_text: root.toggle_submit()
+                    MDTextFieldHintText:
+                        text: "Amount"
+                    MDTextFieldLeadingIcon:
+                        icon: "currency-inr"
+                    MDTextFieldHelperText:
+                        text: "This field is required"
+                        mode: "on_error"
+
+                MDTextField:
+                    id: transaction_type
+                    mode: "outlined"
+                    readonly: True
+                    on_touch_down: 
+                        if self.collide_point(*args[1].pos) and root.type_menu: \
+                        root.type_menu.open(); \
+                        root.check_empty_on_leave(self, False)
+                    on_text: root.toggle_submit()
+                    MDTextFieldHintText:
+                        text: "Transaction Type"
+                    MDTextFieldLeadingIcon:
+                        icon: "swap-vertical"
+                    MDTextFieldHelperText:
+                        text: "This field is required"
+                        mode: "on_error"
+
+                MDTextField:
+                    id: transaction_method
+                    mode: "outlined"
+                    readonly: True
+                    on_touch_down: 
+                        if self.collide_point(*args[1].pos) and root.method_menu: \
+                        root.method_menu.open(); \
+                        root.check_empty_on_leave(self, False)
+                    on_text: root.toggle_submit()
+                    MDTextFieldHintText:
+                        text: "Transaction Method"
+                    MDTextFieldLeadingIcon:
+                        icon: "wallet-outline"
+                    MDTextFieldHelperText:
+                        text: "This field is required"
+                        mode: "on_error"
+
+                MDTextField:
+                    id: received_by
+                    mode: "outlined"
+                    on_focus: root.check_empty_on_leave(self, self.focus)
+                    on_text: root.toggle_submit()
+                    MDTextFieldHintText:
+                        text: "Received/Given By"
+                    MDTextFieldLeadingIcon:
+                        icon: "account-check-outline"
+                    MDTextFieldHelperText:
+                        text: "This field is required"
+                        mode: "on_error"
+                
+                Widget:
+                    size_hint_y: None
+                    height: dp(300) if amount.focus or person_name.focus or branch_name.focus or received_by.focus else dp(20)
